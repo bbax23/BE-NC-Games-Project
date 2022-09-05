@@ -1,8 +1,8 @@
 const request = require('supertest');
 const app = require('../app');
-const db = require('../db');
-const testData = require('..db/data/test-data');
-const seed = require('../db/seeds');
+const db = require('../db/connection');
+const testData = require('../db/data/test-data');
+const seed = require('../db/seeds/seed');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -13,7 +13,7 @@ describe('GET /api/categories', () => {
       .get('/api/categories')
       .expect(200)
       .then(({ body }) => {
-        const { games } = body;
+        const games = body.categories;
         expect(games).toBeInstanceOf(Array);
         expect(games.length > 0).toBe(true);
         games.forEach((game) => {
