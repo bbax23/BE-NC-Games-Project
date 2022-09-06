@@ -65,7 +65,7 @@ describe('GET /api/reviews/:review_id', () => {
   describe('error handling', () => {
     test('status 400: should return a message for a bad request', () => {
       return request(app)
-        .get('/spi/reviews/not_an_id')
+        .get('/api/reviews/not_an_id')
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad request, that review id does not exist');
