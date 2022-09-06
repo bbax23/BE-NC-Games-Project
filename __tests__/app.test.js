@@ -7,8 +7,20 @@ const seed = require('../db/seeds/seed');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe('universal 404', () => {
+  test('status 404: should return a message for invalid path', () => {
+    return request(app)
+      .get('/api/category')
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.msg).toBe('Invalid path.');
+      });
+  });
+});
+
 describe('GET /api/categories', () => {
-  test('should return an array of objects with slug and description properties', () => {
+  test('status 200: should return an array of objects with slug and description properties', () => {
     return request(app)
       .get('/api/categories')
       .expect(200)

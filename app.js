@@ -5,6 +5,8 @@ const app = express();
 
 app.get('/api/categories', getCategories);
 
-app.use((err, req, res, next) => {});
+app.all('*', (req, res) => {
+  res.status(404).send({ msg: 'Invalid path.' });
+});
 
 module.exports = app;
