@@ -48,19 +48,28 @@ describe('GET /api/reviews/:review_id', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.review).toEqual({
-            review_id: revId,
+            review_id: 3,
             title: expect.any(String),
             review_body: expect.any(String),
             designer: expect.any(String),
-            review_image_url: expect.any(String),
+            review_img_url: expect.any(String),
             votes: expect.any(Number),
             category: expect.any(String),
             owner: expect.any(String),
-            created_at: expect.any(Date),
+            created_at: expect.any(String),
           });
         });
     });
   });
 
-  describe('error handling', () => {});
+  describe('error handling', () => {
+    test('status 400: should return a message for a bad request', () => {
+      return request(app)
+        .get('/spi/reviews/not_an_id')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, that review id does not exist');
+        });
+    });
+  });
 });
