@@ -49,14 +49,15 @@ describe('GET /api/reviews/:review_id', () => {
         .then(({ body }) => {
           expect(body.review).toEqual({
             review_id: 3,
-            title: expect.any(String),
-            review_body: expect.any(String),
-            designer: expect.any(String),
-            review_img_url: expect.any(String),
-            votes: expect.any(Number),
-            category: expect.any(String),
-            owner: expect.any(String),
-            created_at: expect.any(String),
+            title: 'Ultimate Werewolf',
+            designer: 'Akihisa Okui',
+            owner: 'bainesface',
+            review_img_url:
+              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+            review_body: "We couldn't find the werewolf!",
+            category: 'social deduction',
+            created_at: '2021-01-18T10:01:41.251Z',
+            votes: 5,
           });
         });
     });
@@ -68,7 +69,15 @@ describe('GET /api/reviews/:review_id', () => {
         .get('/api/reviews/not_an_id')
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe('Bad request, that review id does not exist');
+          expect(body.msg).toBe('Bad request, not a review id');
+        });
+    });
+    test('status 404: should return a message for an id that does not exist', () => {
+      return request(app)
+        .get('/api/reviews/10000')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('That review id does not exist');
         });
     });
   });
