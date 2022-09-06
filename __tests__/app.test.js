@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { use } = require('../app');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
@@ -80,5 +81,27 @@ describe('GET /api/reviews/:review_id', () => {
           expect(body.msg).toBe('That review id does not exist');
         });
     });
+  });
+});
+
+describe('GET /api/users', () => {
+  test('status 200: should return an array of user objects with correct keys', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body }) => {
+        const userList = body.users;
+        expect(userList).toBeInstanceOf(Array);
+        expect(userList.length > 0).toBe(true);
+        userList.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
   });
 });
