@@ -38,3 +38,29 @@ describe('GET /api/categories', () => {
       });
   });
 });
+
+describe('GET /api/reviews/:review_id', () => {
+  describe('happy paths', () => {
+    test('status 200: should return the matching review with correct keys', () => {
+      const revId = 3;
+      return request(app)
+        .get(`/api/reviews/${revId}`)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review).toEqual({
+            review_id: revId,
+            title: expect.any(String),
+            review_body: expect.any(String),
+            designer: expect.any(String),
+            review_image_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            owner: expect.any(String),
+            created_at: expect.any(Date),
+          });
+        });
+    });
+  });
+
+  describe('error handling', () => {});
+});
