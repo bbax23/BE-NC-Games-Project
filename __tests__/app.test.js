@@ -10,10 +10,9 @@ afterAll(() => db.end());
 describe('universal 404', () => {
   test('status 404: should return a message for invalid path', () => {
     return request(app)
-      .get('/api/category')
+      .get('/api/invalid')
       .expect(404)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toBe('Invalid path.');
       });
   });
