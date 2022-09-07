@@ -110,9 +110,9 @@ describe('PATCH /api/reviews/:review_id', () => {
   describe('happy path', () => {
     test('status 200: should return the review with updated votes value', () => {
       const revId = 3;
-      const voteObj = { inc_votes: 30 };
       return request(app)
         .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 30 })
         .expect(200)
         .then(({ body }) => {
           expect(body.review).toEqual({

@@ -13,7 +13,7 @@ exports.getRevById = (req, res, next) => {
 };
 
 exports.patchReviewVotes = (req, res) => {
-  const voteObj = { inc_votes: 30 };
+  const voteObj = req.body;
   const { review_id } = req.params;
   updateReviewVotes(voteObj, review_id).then((review) => {
     res.status(200).send({ review });
