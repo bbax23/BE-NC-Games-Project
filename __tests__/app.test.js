@@ -131,5 +131,16 @@ describe('PATCH /api/reviews/:review_id', () => {
     });
   });
 
-  describe('error handling', () => {});
+  describe('error handling', () => {
+    test('status 400: bad request for malformed body', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, malformed body');
+        });
+    });
+  });
 });

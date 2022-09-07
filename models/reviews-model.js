@@ -15,12 +15,16 @@ exports.selectRevById = (review_id) => {
 };
 
 exports.updateReviewVotes = (voteObj, review_id) => {
-  return db
-    .query(
-      'UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;',
-      [voteObj.inc_votes, review_id]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
+  if (Object.keys(voteObj).length === 0) {
+    return Promise.reject({ status: 400, msg: 'Bad request, malformed body' });
+  } else {
+    return db
+      .query(
+        'UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;',
+        [voteObj.inc_votes, review_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
 };
