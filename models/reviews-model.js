@@ -15,7 +15,10 @@ exports.selectRevById = (review_id) => {
 };
 
 exports.updateReviewVotes = (voteObj, review_id) => {
-  if (Object.keys(voteObj).length === 0) {
+  if (
+    Object.keys(voteObj).length === 0 ||
+    voteObj.hasOwnProperty('inc_votes') === false
+  ) {
     return Promise.reject({ status: 400, msg: 'Bad request, malformed body' });
   } else if (typeof voteObj.inc_votes !== 'number') {
     return Promise.reject({
@@ -29,6 +32,12 @@ exports.updateReviewVotes = (voteObj, review_id) => {
         [voteObj.inc_votes, review_id]
       )
       .then((result) => {
+        if (result.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: 'That review id does not exist',
+          });
+        }
         return result.rows[0];
       });
   }

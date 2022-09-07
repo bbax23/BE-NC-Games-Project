@@ -132,11 +132,21 @@ describe('PATCH /api/reviews/:review_id', () => {
   });
 
   describe('error handling', () => {
-    test('status 400: bad request for malformed body', () => {
+    test('status 400: bad request for malformed body empty obj', () => {
       const revId = 3;
       return request(app)
         .patch(`/api/reviews/${revId}`)
         .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, malformed body');
+        });
+    });
+    test('status 400: bad request for malformed body missing key', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ wrong_key: 1 })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad request, malformed body');
@@ -150,6 +160,16 @@ describe('PATCH /api/reviews/:review_id', () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe('Bad request, incorrect value type');
+        });
+    });
+    test('status 404: not a review id', () => {
+      const revId = 10000;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('That review id does not exist');
         });
     });
   });
