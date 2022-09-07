@@ -142,5 +142,15 @@ describe('PATCH /api/reviews/:review_id', () => {
           expect(body.msg).toBe('Bad request, malformed body');
         });
     });
+    test('status 400: bad request for incorrect type', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 'not a number' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, incorrect value type');
+        });
+    });
   });
 });

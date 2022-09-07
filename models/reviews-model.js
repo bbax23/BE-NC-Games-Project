@@ -17,6 +17,11 @@ exports.selectRevById = (review_id) => {
 exports.updateReviewVotes = (voteObj, review_id) => {
   if (Object.keys(voteObj).length === 0) {
     return Promise.reject({ status: 400, msg: 'Bad request, malformed body' });
+  } else if (typeof voteObj.inc_votes !== 'number') {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad request, incorrect value type',
+    });
   } else {
     return db
       .query(
