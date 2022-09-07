@@ -1,13 +1,19 @@
 const express = require('express');
 const { getCategories } = require('./controllers/category-controller');
-const { getRevById } = require('./controllers/reviews-controller');
+const {
+  getRevById,
+  patchReviewVotes,
+} = require('./controllers/reviews-controller');
 const { getUsers } = require('./controllers/users-controller');
 
 const app = express();
+app.use(express.json());
 
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getRevById);
 app.get('/api/users', getUsers);
+
+app.patch('/api/reviews/:review_id', patchReviewVotes);
 
 app.all('*', (req, res) => {
   res.status(404).send({ msg: 'Invalid path.' });
@@ -22,4 +28,5 @@ app.use((err, req, res, next) => {
     res.status(500).send({ msg: 'Internal server error' });
   }
 });
+
 module.exports = app;

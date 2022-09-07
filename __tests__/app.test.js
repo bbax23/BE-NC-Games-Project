@@ -105,3 +105,72 @@ describe('GET /api/users', () => {
       });
   });
 });
+
+describe('PATCH /api/reviews/:review_id', () => {
+  describe('happy path', () => {
+    test('status 200: should return the review with updated votes value', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 30 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review).toEqual({
+            review_id: 3,
+            title: 'Ultimate Werewolf',
+            designer: 'Akihisa Okui',
+            owner: 'bainesface',
+            review_img_url:
+              'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+            review_body: "We couldn't find the werewolf!",
+            category: 'social deduction',
+            created_at: '2021-01-18T10:01:41.251Z',
+            votes: 35,
+          });
+        });
+    });
+  });
+
+  describe('error handling', () => {
+    test('status 400: bad request for malformed body empty obj', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, malformed body');
+        });
+    });
+    test('status 400: bad request for malformed body missing key', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ wrong_key: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, malformed body');
+        });
+    });
+    test('status 400: bad request for incorrect type', () => {
+      const revId = 3;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 'not a number' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, incorrect value type');
+        });
+    });
+    test('status 404: not a review id', () => {
+      const revId = 10000;
+      return request(app)
+        .patch(`/api/reviews/${revId}`)
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('That review id does not exist');
+        });
+    });
+  });
+});
