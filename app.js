@@ -1,6 +1,9 @@
 const express = require('express');
 const { getCategories } = require('./controllers/category-controller');
-const { getRevById } = require('./controllers/reviews-controller');
+const {
+  getRevById,
+  patchReviewVotes,
+} = require('./controllers/reviews-controller');
 const { getUsers } = require('./controllers/users-controller');
 
 const app = express();
@@ -8,6 +11,8 @@ const app = express();
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getRevById);
 app.get('/api/users', getUsers);
+
+app.patch('/api/reviews/:review_id', patchReviewVotes);
 
 app.all('*', (req, res) => {
   res.status(404).send({ msg: 'Invalid path.' });
