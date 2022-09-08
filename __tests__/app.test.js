@@ -42,7 +42,7 @@ describe('GET /api/categories', () => {
 
 describe('GET /api/reviews/:review_id', () => {
   describe('happy paths', () => {
-    test('status 200: should return the matching review with correct keys', () => {
+    test('status 200: should return the matching review with correct keys, now including comments', () => {
       const revId = 3;
       return request(app)
         .get(`/api/reviews/${revId}`)
@@ -59,6 +59,7 @@ describe('GET /api/reviews/:review_id', () => {
             category: 'social deduction',
             created_at: '2021-01-18T10:01:41.251Z',
             votes: 5,
+            comment_count: '3',
           });
         });
     });
