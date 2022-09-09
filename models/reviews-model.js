@@ -70,6 +70,12 @@ exports.selectReviews = (category) => {
 exports.selectReviewComments = (review_id) => {
   const queryString = 'SELECT * FROM comments WHERE review_id = $1';
   return db.query(queryString, [review_id]).then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: 'That review id does not exist',
+      });
+    }
     return result.rows;
   });
 };

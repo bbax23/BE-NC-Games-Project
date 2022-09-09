@@ -272,4 +272,24 @@ describe('GET /api/reviews/:review_id/comments', () => {
         });
     });
   });
+  describe('error handling', () => {
+    test('status 400: should return a message for a bad request', () => {
+      const revId = 'not an id';
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, not a review id');
+        });
+    });
+    test('status 404: should return a message for an id that does not exist', () => {
+      const revId = 10000;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('That review id does not exist');
+        });
+    });
+  });
 });
