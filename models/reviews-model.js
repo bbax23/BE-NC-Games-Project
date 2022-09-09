@@ -59,7 +59,7 @@ exports.selectReviews = (category) => {
       if (result.rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: 'Bad request, no such category',
+          msg: 'There is no such category',
         });
       }
       return result.rows;

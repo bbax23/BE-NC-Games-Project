@@ -240,7 +240,7 @@ describe('GET /api/reviews, optional /:category that filters by category', () =>
         .get(`/api/reviews?category=${categ}`)
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe('Bad request, no such category');
+          expect(body.msg).toBe('There is no such category');
         });
     });
   });
