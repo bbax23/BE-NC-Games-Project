@@ -204,4 +204,31 @@ describe('GET /api/reviews, optional /:category that filters by category', () =>
         });
       });
   });
+  test('status 200: should return array of review objects filtered by provided category', () => {
+    const categ = 'social deduction';
+    return request(app)
+      .get(`/api/reviews?category=${categ}`)
+      .expect(200)
+      .then(({ body }) => {
+        const reviews = body.reviews;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews.length > 0).toBe(true);
+        expect(reviews).toBeSortedBy('created_at', { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: 'social deduction',
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
+  });
 });

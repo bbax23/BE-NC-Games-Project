@@ -43,10 +43,21 @@ exports.updateReviewVotes = (voteObj, review_id) => {
   }
 };
 
-exports.selectReviews = () => {
-  const queryString =
-    'SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY created_at DESC';
-  return db.query(queryString).then((result) => {
-    return result.rows;
-  });
+exports.selectReviews = (category) => {
+  const queryValues = [];
+  let queryStart =
+    'SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id ';
+  let queryEnd = 'GROUP BY reviews.review_id ORDER BY created_at DESC;';
+
+  if (category === undefined) {
+    return db.query(queryStart + queryEnd).then((result) => {
+      return result.rows;
+    });
+  } else {
+    queryValues.push(category);
+    queryStart += `WHERE category = $1 `;
+    return db.query(queryStart + queryEnd, queryValues).then((result) => {
+      return result.rows;
+    });
+  }
 };
