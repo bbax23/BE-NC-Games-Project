@@ -245,3 +245,31 @@ describe('GET /api/reviews, optional /:category that filters by category', () =>
     });
   });
 });
+
+describe('GET /api/reviews/:review_id/comments', () => {
+  describe('happy path', () => {
+    test('status 200: should return an array of comments for passed review id with correct keys', () => {
+      const revId = 3;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const comments = body.comments;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments.length > 0).toBe(true);
+          comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
+});

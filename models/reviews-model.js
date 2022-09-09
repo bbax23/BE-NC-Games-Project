@@ -66,3 +66,10 @@ exports.selectReviews = (category) => {
     });
   }
 };
+
+exports.selectReviewComments = (review_id) => {
+  const queryString = 'SELECT * FROM comments WHERE review_id = $1';
+  return db.query(queryString, [review_id]).then((result) => {
+    return result.rows;
+  });
+};
