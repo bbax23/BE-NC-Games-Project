@@ -23,9 +23,11 @@ exports.patchReviewVotes = (req, res, next) => {
     .catch(next);
 };
 
-exports.getReviews = (req, res) => {
+exports.getReviews = (req, res, next) => {
   const { category } = req.query;
-  selectReviews(category).then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+  selectReviews(category)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch(next);
 };
