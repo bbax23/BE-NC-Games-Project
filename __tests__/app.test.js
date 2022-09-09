@@ -288,7 +288,20 @@ describe('GET /api/reviews/:review_id/comments', () => {
         .get(`/api/reviews/${revId}/comments`)
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe('That review id does not exist');
+          expect(body.msg).toBe(
+            'The review id does not exist, or there are no comments for this review'
+          );
+        });
+    });
+    test('status 404: should return a message if there are no comments for a valid review id', () => {
+      const revId = 5;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            'The review id does not exist, or there are no comments for this review'
+          );
         });
     });
   });

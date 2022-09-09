@@ -73,7 +73,7 @@ exports.selectReviewComments = (review_id) => {
     if (result.rowCount === 0) {
       return Promise.reject({
         status: 404,
-        msg: 'That review id does not exist',
+        msg: 'The review id does not exist, or there are no comments for this review',
       });
     }
     return result.rows;
