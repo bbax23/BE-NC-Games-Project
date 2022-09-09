@@ -3,6 +3,7 @@ const { getCategories } = require('./controllers/category-controller');
 const {
   getRevById,
   patchReviewVotes,
+  getReviews,
 } = require('./controllers/reviews-controller');
 const { getUsers } = require('./controllers/users-controller');
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.get('/api/categories', getCategories);
 app.get('/api/reviews/:review_id', getRevById);
 app.get('/api/users', getUsers);
+app.get('/api/reviews', getReviews);
 
 app.patch('/api/reviews/:review_id', patchReviewVotes);
 

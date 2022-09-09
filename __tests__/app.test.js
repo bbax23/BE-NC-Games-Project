@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { use } = require('../app');
+const jestSort = require('jest-sorted');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
@@ -171,6 +172,75 @@ describe('PATCH /api/reviews/:review_id', () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe('That review id does not exist');
+        });
+    });
+  });
+});
+
+describe('GET /api/reviews, optional /:category that filters by category', () => {
+  describe('happy paths', () => {
+    test('status 200: should return an array of review objects with correct keys and values', () => {
+      return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(reviews).toBeInstanceOf(Array);
+          expect(reviews.length > 0).toBe(true);
+          expect(reviews).toBeSortedBy('created_at', { descending: true });
+          reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                category: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test('status 200: should return array of review objects filtered by provided category', () => {
+      const categ = 'social deduction';
+      return request(app)
+        .get(`/api/reviews?category=${categ}`)
+        .expect(200)
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(reviews).toBeInstanceOf(Array);
+          expect(reviews.length > 0).toBe(true);
+          expect(reviews).toBeSortedBy('created_at', { descending: true });
+          reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                owner: expect.any(String),
+                title: expect.any(String),
+                review_id: expect.any(Number),
+                category: 'social deduction',
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
+  describe('error handling', () => {
+    test('status 404: if category given is valid but does not exist', () => {
+      const categ = 'not a category';
+      return request(app)
+        .get(`/api/reviews?category=${categ}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('There is no such category');
         });
     });
   });
