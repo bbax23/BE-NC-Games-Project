@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+
 exports.selectRevById = (review_id) => {
   const queryString =
     'SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id WHERE reviews.review_id = $1 GROUP BY reviews.review_id;';
@@ -40,4 +41,12 @@ exports.updateReviewVotes = (voteObj, review_id) => {
         return result.rows[0];
       });
   }
+};
+
+exports.selectReviews = () => {
+  const queryString =
+    'SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id ORDER BY created_at DESC';
+  return db.query(queryString).then((result) => {
+    return result.rows;
+  });
 };

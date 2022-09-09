@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { use } = require('../app');
+const jestSort = require('jest-sorted');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
@@ -173,5 +174,34 @@ describe('PATCH /api/reviews/:review_id', () => {
           expect(body.msg).toBe('That review id does not exist');
         });
     });
+  });
+});
+
+describe('GET /api/reviews, optional /:category that filters by category', () => {
+  test('status 200: should return an array of review objects with correct keys and values', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then(({ body }) => {
+        const reviews = body.reviews;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews.length > 0).toBe(true);
+        expect(reviews).toBeSortedBy('created_at', { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
   });
 });
