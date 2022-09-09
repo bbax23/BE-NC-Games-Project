@@ -256,7 +256,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
         .then(({ body }) => {
           const comments = body.comments;
           expect(comments).toBeInstanceOf(Array);
-          expect(comments.length > 0).toBe(true);
+          expect(comments.length === 3).toBe(true);
           comments.forEach((comment) => {
             expect(comment).toEqual(
               expect.objectContaining({
@@ -265,7 +265,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
                 created_at: expect.any(String),
                 author: expect.any(String),
                 body: expect.any(String),
-                review_id: expect.any(Number),
+                review_id: 3,
               })
             );
           });
