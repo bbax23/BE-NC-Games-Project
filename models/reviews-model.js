@@ -66,3 +66,16 @@ exports.selectReviews = (category) => {
     });
   }
 };
+
+exports.selectReviewComments = (review_id) => {
+  const queryString = 'SELECT * FROM comments WHERE review_id = $1';
+  return db.query(queryString, [review_id]).then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: 'The review id does not exist, or there are no comments for this review',
+      });
+    }
+    return result.rows;
+  });
+};

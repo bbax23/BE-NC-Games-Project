@@ -245,3 +245,64 @@ describe('GET /api/reviews, optional /:category that filters by category', () =>
     });
   });
 });
+
+describe('GET /api/reviews/:review_id/comments', () => {
+  describe('happy path', () => {
+    test('status 200: should return an array of comments for passed review id with correct keys', () => {
+      const revId = 3;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const comments = body.comments;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments.length === 3).toBe(true);
+          comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: 3,
+              })
+            );
+          });
+        });
+    });
+  });
+  describe('error handling', () => {
+    test('status 400: should return a message for a bad request', () => {
+      const revId = 'not an id';
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad request, not a review id');
+        });
+    });
+    test('status 404: should return a message for an id that does not exist', () => {
+      const revId = 10000;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            'The review id does not exist, or there are no comments for this review'
+          );
+        });
+    });
+    test('status 404: should return a message if there are no comments for a valid review id', () => {
+      const revId = 5;
+      return request(app)
+        .get(`/api/reviews/${revId}/comments`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            'The review id does not exist, or there are no comments for this review'
+          );
+        });
+    });
+  });
+});
